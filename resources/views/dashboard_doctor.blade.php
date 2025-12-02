@@ -66,22 +66,22 @@
     
     <style>
         :root {
-            --pharmacy-primary: #696cff;
-            --pharmacy-secondary: #5f61e6;
+            --pharmacy-primary: #5155bc;
+            --pharmacy-secondary: #4448a0;
         }
         
-        /* Pharmacy theme alignment */
-        :root{ --bs-primary: #696cff; }
-        .btn-primary{ background-color:#696cff; border-color:#696cff; }
-        .btn-outline-primary{ color:#696cff; border-color:#696cff; }
-        .btn-outline-primary:hover{ background-color:#696cff; color:#fff; }
-        .text-primary{ color:#696cff !important; }
-        .bg-primary{ background-color:#696cff !important; }
-        .badge.bg-primary{ background-color:#696cff !important; }
-        .menu .menu-item.active > .menu-link{ background: rgba(105,108,255,0.08); color:#696cff; }
-        .menu .menu-item.active .menu-icon{ color:#696cff; }
-        a{ color:#696cff; }
-        a:hover{ color:#595cff; }
+        /* Theme alignment - Brand Color: #5155bc */
+        :root{ --bs-primary: #5155bc; }
+        .btn-primary{ background-color:#5155bc; border-color:#5155bc; }
+        .btn-outline-primary{ color:#5155bc; border-color:#5155bc; }
+        .btn-outline-primary:hover{ background-color:#5155bc; color:#fff; }
+        .text-primary{ color:#5155bc !important; }
+        .bg-primary{ background-color:#5155bc !important; }
+        .badge.bg-primary{ background-color:#5155bc !important; }
+        .menu .menu-item.active > .menu-link{ background: rgba(81,85,188,0.08); color:#5155bc; }
+        .menu .menu-item.active .menu-icon{ color:#5155bc; }
+        a{ color:#5155bc; }
+        a:hover{ color:#4448a0; }
 
         /* Demo-inspired gradient navbar */
         .navbar-pharmacy {
@@ -125,12 +125,12 @@
         .table { --tbl-border: #eceff3; }
         .table thead th { border-top: 0; color: #5a6169; font-weight: 600; letter-spacing: .2px; }
         .table > :not(caption) > * > * { border-bottom: 1px solid var(--tbl-border); }
-        .table-hover tbody tr:hover { background-color: rgba(105,108,255,0.06); }
+        .table-hover tbody tr:hover { background-color: rgba(81,85,188,0.06); }
         .table-striped > tbody > tr:nth-of-type(odd) > * { background-color: rgba(0,0,0,.015); }
 
         /* Empty state utility */
         .empty-state { text-align: center; padding: 2rem 1rem; color: #98a2b3; }
-        .empty-state .icon { width: 48px; height: 48px; border-radius: 50%; background: rgba(105,108,255,0.12); color: var(--pharmacy-primary); display: inline-flex; align-items: center; justify-content: center; margin-bottom: .75rem; }
+        .empty-state .icon { width: 48px; height: 48px; border-radius: 50%; background: rgba(81,85,188,0.12); color: var(--pharmacy-primary); display: inline-flex; align-items: center; justify-content: center; margin-bottom: .75rem; }
         .empty-state .title { font-weight: 600; color: #475467; }
         .empty-state .hint { font-size: .9rem; }
 
@@ -143,25 +143,25 @@
 
         /* Premium Card Styles */
         .card { border: 1px solid rgba(0,0,0,0.04); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(105,108,255,0.12) !important; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(81,85,188,0.12) !important; }
         .card-header { background: transparent; padding: 1.5rem; font-weight: 600; }
         .card-body { padding: 1.5rem; }
 
         /* Stat Cards Premium */
         .stat-card { position: relative; overflow: hidden; }
-        .stat-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, rgba(105,108,255,0.08), transparent); border-radius: 50%; transform: translate(30%, -30%); }
+        .stat-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, rgba(81,85,188,0.08), transparent); border-radius: 50%; transform: translate(30%, -30%); }
         .stat-card .content-left span { font-size: 0.8125rem; font-weight: 500; color: #667085; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-card .content-left h4 { font-size: 2rem; font-weight: 700; color: #101828; }
         .stat-card .avatar-initial { width: 56px; height: 56px; font-size: 1.5rem; }
 
         /* Alert Premium */
         .alert { border: 0; border-radius: 12px; padding: 1rem 1.25rem; }
-        .alert-primary { background: linear-gradient(135deg, rgba(105,108,255,0.12), rgba(105,108,255,0.08)); color: var(--pharmacy-primary); border-left: 4px solid var(--pharmacy-primary); }
+        .alert-primary { background: linear-gradient(135deg, rgba(81,85,188,0.12), rgba(81,85,188,0.08)); color: var(--pharmacy-primary); border-left: 4px solid var(--pharmacy-primary); }
 
         /* Button Enhancements */
         .btn { font-weight: 500; letter-spacing: 0.02em; padding: 0.625rem 1.25rem; transition: all 0.2s ease; }
-        .btn-primary, .btn-pharmacy { box-shadow: 0 2px 8px rgba(105,108,255,0.24); }
-        .btn-primary:hover, .btn-pharmacy:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(105,108,255,0.32); }
+        .btn-primary, .btn-pharmacy { box-shadow: 0 2px 8px rgba(81,85,188,0.24); }
+        .btn-primary:hover, .btn-pharmacy:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(81,85,188,0.32); }
         .btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
 
         /* Badge Premium */
@@ -184,16 +184,16 @@
 
         /* Navbar Premium */
         .layout-navbar { backdrop-filter: blur(10px); }
-        .navbar-pharmacy { box-shadow: 0 4px 20px rgba(105,108,255,0.15) !important; }
+        .navbar-pharmacy { box-shadow: 0 4px 20px rgba(81,85,188,0.15) !important; }
 
         /* Dropdown Premium */
         .dropdown-menu { border: 0; box-shadow: 0 8px 32px rgba(0,0,0,0.12); border-radius: 12px; padding: 0.5rem; }
         .dropdown-item { border-radius: 8px; padding: 0.625rem 1rem; font-weight: 500; transition: all 0.15s ease; }
-        .dropdown-item:hover { background: rgba(105,108,255,0.08); color: var(--pharmacy-primary); transform: translateX(2px); }
+        .dropdown-item:hover { background: rgba(81,85,188,0.08); color: var(--pharmacy-primary); transform: translateX(2px); }
 
         /* Input Premium */
         .form-control, .form-select { border: 1px solid #e4e7ec; border-radius: 8px; padding: 0.625rem 1rem; transition: all 0.2s ease; }
-        .form-control:focus, .form-select:focus { border-color: var(--pharmacy-primary); box-shadow: 0 0 0 3px rgba(105,108,255,0.12); }
+        .form-control:focus, .form-select:focus { border-color: var(--pharmacy-primary); box-shadow: 0 0 0 3px rgba(81,85,188,0.12); }
 
         /* Animations */
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

@@ -4,29 +4,29 @@
 @section('head')
   <script src="https://cdn.ckeditor.com/4.20.0/standard/ckeditor.js"></script>
   <style>
-    /* Premium card styling */
+    /* Premium card styling - Brand Color: #5155bc */
     .card { border: 1px solid rgba(0,0,0,0.04); border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: all 0.3s ease; }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(105,108,255,0.12) !important; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(81,85,188,0.12) !important; }
     .card-header { border-bottom: 0; background: transparent; padding: 1.5rem; font-weight: 600; }
     .card-body { padding: 1.5rem; }
 
     /* Table styling */
     .table thead th { background: #f9fafb; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 1rem; }
     .table tbody td { padding: 1rem; vertical-align: middle; }
-    .table-hover tbody tr:hover { background-color: rgba(105,108,255,0.06); }
+    .table-hover tbody tr:hover { background-color: rgba(81,85,188,0.06); }
 
     /* Button enhancements */
     .btn { font-weight: 500; transition: all 0.2s ease; }
-    .btn-primary { box-shadow: 0 2px 8px rgba(105,108,255,0.24); }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(105,108,255,0.32); }
+    .btn-primary { box-shadow: 0 2px 8px rgba(81,85,188,0.24); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(81,85,188,0.32); }
 
     /* Dropdown styling */
     .dropdown-menu { border: 0; box-shadow: 0 8px 32px rgba(0,0,0,0.12); border-radius: 12px; padding: 0.5rem; }
     .dropdown-item { border-radius: 8px; padding: 0.625rem 1rem; font-weight: 500; }
-    .dropdown-item:hover { background: rgba(105,108,255,0.08); color: #696cff; }
+    .dropdown-item:hover { background: rgba(81,85,188,0.08); color: #5155bc; }
 
     /* Input styling */
-    .form-control:focus, .form-select:focus { border-color: #696cff; box-shadow: 0 0 0 3px rgba(105,108,255,0.12); }
+    .form-control:focus, .form-select:focus { border-color: #5155bc; box-shadow: 0 0 0 3px rgba(81,85,188,0.12); }
 
     /* Animations */
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -139,7 +139,7 @@
 @section('content')
   <div class="row mb-4 fade-in-up">
     <div class="col-12 col-lg-8 mb-3 mb-lg-0">
-      <div class="card" style="background: linear-gradient(135deg, rgba(105,108,255,0.05) 0%, rgba(139,92,246,0.05) 100%); border: 1px solid rgba(105,108,255,0.1);">
+      <div class="card" style="background: linear-gradient(135deg, rgba(81,85,188,0.05) 0%, rgba(68,72,160,0.05) 100%); border: 1px solid rgba(81,85,188,0.1);">
         <div class="card-body d-flex align-items-center justify-content-between py-4">
           <div>
             <span class="badge bg-primary bg-opacity-10 text-primary mb-2">Patient Dashboard</span>
