@@ -1,0 +1,2347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyVitalz Pharmacy Dashboard - Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* Match patient module Sneat theme */
+            --pharmacy-primary: #696cff; /* primary */
+            --pharmacy-secondary: #5f61e6; /* hover shade used in theme-default.css */
+        }
+        
+        body { background-color: #f8f9fa; }
+        
+        .navbar-pharmacy {
+            background: linear-gradient(135deg, var(--pharmacy-primary) 0%, var(--pharmacy-secondary) 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar {
+            background: linear-gradient(180deg, var(--pharmacy-primary) 0%, var(--pharmacy-secondary) 100%);
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            z-index: 1000;
+            padding-top: 70px;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin: 2px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding-top: 70px;
+        }
+        
+        .stat-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            border-radius: 12px;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .btn-pharmacy {
+            background-color: var(--pharmacy-primary);
+            border-color: var(--pharmacy-primary);
+            color: white;
+        }
+        
+        .btn-pharmacy:hover {
+            background-color: #5f61e6; /* theme hover */
+            border-color: #5f61e6;
+            color: white;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .avatar-initial {
+            background-color: #e9ecef;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .bg-label-primary { background-color: rgba(105, 108, 255, 0.16); color: #696cff; }
+        .bg-label-success { background-color: rgba(113, 221, 55, 0.16); color: #71dd37; }
+        .bg-label-warning { background-color: rgba(255, 171, 0, 0.16); color: #ffab00; }
+        .bg-label-danger { background-color: rgba(255, 62, 29, 0.16); color: #ff3e1d; }
+        .bg-label-info { background-color: rgba(3, 195, 236, 0.16); color: #03c3ec; }
+        
+        .page-content { display: none; }
+        .page-content.active { display: block; }
+        
+        .navbar-brand { font-weight: 700; font-size: 1.5rem; }
+        .table th { border-top: none; font-weight: 600; color: #5a6169; }
+        /* Messaging UI */
+        .threads-list { max-height: 460px; overflow: auto; }
+        .chat-pane { flex: 1; background: #fff; border: 1px solid #e9ecef; border-radius: 8px; overflow: auto; }
+        .chat-bubble { display: inline-block; padding: 8px 12px; border-radius: 12px; max-width: 75%; }
+        .chat-bubble.me { background: var(--pharmacy-primary); color: #fff; }
+        .chat-bubble.them { background: #f1f3f5; color: #343a40; }
+        .thread-item.active { background: rgba(105,108,255,0.08); }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-pharmacy fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white ms-3" href="#">
+                <i class="bx bx-plus-medical me-2"></i>MyVitalz Pharmacy
+            </a>
+            
+            <div class="navbar-nav ms-auto me-3">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bx bx-bell me-1"></i>
+                        <span class="badge bg-danger rounded-pill">3</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="bx bx-time me-2"></i>New prescription received</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bx bx-error me-2"></i>Low stock alert: Paracetamol</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bx bx-calendar me-2"></i>Refill reminder due</a></li>
+                    </ul>
+                </div>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                        <img src="https://via.placeholder.com/32/696cff/ffffff?text=P" class="rounded-circle me-2" alt="Profile">
+                        Green Valley Pharmacy
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="bx bx-user me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bx bx-cog me-2"></i>Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="bx bx-log-out me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <nav class="nav flex-column">
+            <a class="nav-link active" href="#" onclick="showPage(event,'home')">
+                <i class="bx bx-home me-2"></i>Dashboard
+            </a>
+            <a class="nav-link" href="#" onclick="showPage(event,'monitoring')">
+                <i class="bx bx-user-check me-2"></i>Patient monitoring
+            </a>
+            <a class="nav-link" href="#" onclick="showPage(event,'prescriptions')">
+                <i class="bx bx-receipt me-2"></i>E-prescription
+            </a>
+            <a class="nav-link" href="#" onclick="showPage(event,'inventory')">
+                <i class="bx bx-package me-2"></i>Inventory
+            </a>
+            <a class="nav-link" href="#" onclick="showPage(event,'network')">
+                <i class="bx bx-network-chart me-2"></i>Network
+            </a>
+            <a class="nav-link" href="#" onclick="showPage(event,'rewards')">
+                <i class="bx bx-gift me-2"></i>Doctors rewards
+            </a>
+            <a class="nav-link" href="#" onclick="showPage(event,'settings')">
+                <i class="bx bx-cog me-2"></i>Virtual pharmacy settings
+            </a>
+            <a class="nav-link" href="#" onclick="showPage(event,'messages')">
+                <i class="bx bx-message-rounded-dots me-2"></i>Messages
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid p-4">
+            
+            <!-- Home Page -->
+            <div id="home" class="page-content active">
+                <h4 class="fw-bold mb-4">
+                    <span class="text-muted fw-light">Pharmacy /</span> Dashboard
+                </h4>
+                
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-primary border-0" role="alert">
+                            <i class="bx bx-check-circle me-2"></i>
+                            <strong>Welcome to MyVitalz Pharmacy!</strong> Your comprehensive pharmacy management system is ready.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-4">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start justify-content-between">
+                                    <div class="content-left">
+                                        <span>Network Members</span>
+                                        <div class="d-flex align-items-end mt-2">
+                                            <h4 class="mb-0 me-2">24</h4>
+                                            <small class="text-primary">(+3 this week)</small>
+                                        </div>
+                                    </div>
+                                    <span class="avatar">
+                                        <span class="avatar-initial rounded bg-label-primary">
+                                            <i class="bx bx-network-chart bx-sm"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-4">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start justify-content-between">
+                                    <div class="content-left">
+                                        <span>Pending Prescriptions</span>
+                                        <div class="d-flex align-items-end mt-2">
+                                            <h4 class="mb-0 me-2">8</h4>
+                                            <small class="text-warning">(Needs attention)</small>
+                                        </div>
+                                    </div>
+                                    <span class="avatar">
+                                        <span class="avatar-initial rounded bg-label-warning">
+                                            <i class="bx bx-receipt bx-sm"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-4">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start justify-content-between">
+                                    <div class="content-left">
+                                        <span>Inventory Items</span>
+                                        <div class="d-flex align-items-end mt-2">
+                                            <h4 class="mb-0 me-2">156</h4>
+                                            <small class="text-info">(5 low stock)</small>
+                                        </div>
+                                    </div>
+                                    <span class="avatar">
+                                        <span class="avatar-initial rounded bg-label-info">
+                                            <i class="bx bx-package bx-sm"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-4">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start justify-content-between">
+                                    <div class="content-left">
+                                        <span>Monthly Revenue</span>
+                                        <div class="d-flex align-items-end mt-2">
+                                            <h4 class="mb-0 me-2">₦12,450</h4>
+                                            <small class="text-primary">(+15% vs last month)</small>
+                                        </div>
+                                    </div>
+                                    <span class="avatar">
+                                        <span class="avatar-initial rounded bg-label-success">
+                                            <i class="bx bx-coin bx-sm"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="row">
+                    <div class="col-lg-8 mb-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Recent Prescriptions</h5>
+                                <a href="#" class="btn btn-sm btn-pharmacy" onclick="showPage(event,'prescriptions')">View All</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Patient</th>
+                                                <th>Medication</th>
+                                                <th>Doctor</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="https://via.placeholder.com/32/696cff/ffffff?text=JS" class="rounded-circle me-3" alt="Avatar">
+                                                        <span>John Smith</span>
+                                                    </div>
+                                                </td>
+                                                <td>Amoxicillin 500mg</td>
+                                                <td>Dr. Wilson</td>
+                                                <td><span class="badge bg-warning">Pending</span></td>
+                                                <td>Today, 10:30 AM</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="https://via.placeholder.com/32/28a745/ffffff?text=MD" class="rounded-circle me-3" alt="Avatar">
+                                                        <span>Mary Davis</span>
+                                                    </div>
+                                                </td>
+                                                <td>Lisinopril 10mg</td>
+                                                <td>Dr. Johnson</td>
+                                                <td><span class="badge bg-success">Ready</span></td>
+                                                <td>Today, 9:15 AM</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="https://via.placeholder.com/32/dc3545/ffffff?text=RB" class="rounded-circle me-3" alt="Avatar">
+                                                        <span>Robert Brown</span>
+                                                    </div>
+                                                </td>
+                                                <td>Metformin 850mg</td>
+                                                <td>Dr. Smith</td>
+                                                <td><span class="badge bg-info">Processing</span></td>
+                                                <td>Yesterday, 4:20 PM</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Quick Actions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-pharmacy" onclick="showPage(event,'prescriptions')">
+                                        <i class="bx bx-plus me-2"></i>New Prescription
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="showPage(event,'inventory')">
+                                        <i class="bx bx-package me-2"></i>Add Inventory
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="showPage(event,'network')">
+                                        <i class="bx bx-user-plus me-2"></i>Invite Doctor
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="showPage(event,'monitoring')">
+                                        <i class="bx bx-bell me-2"></i>Send Reminders
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Low Stock Alerts</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bx bx-error-circle text-warning me-3"></i>
+                                    <div>
+                                        <h6 class="mb-0">Paracetamol 500mg</h6>
+                                        <small class="text-muted">Only 8 left</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bx bx-error-circle text-danger me-3"></i>
+                                    <div>
+                                        <h6 class="mb-0">Ibuprofen 400mg</h6>
+                                        <small class="text-muted">Only 3 left</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="bx bx-error-circle text-warning me-3"></i>
+                                    <div>
+                                        <h6 class="mb-0">Aspirin 75mg</h6>
+                                        <small class="text-muted">Only 12 left</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OSR Modal -->
+            <div class="modal fade" id="osrModal" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title"><i class="bx bx-package me-2"></i>Out of Stock Request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Drug</label>
+                      <input id="osrDrug" list="drugOptionsOsr" class="form-control" placeholder="Start typing..."/>
+                      <datalist id="drugOptionsOsr"></datalist>
+                    </div>
+                    <div class="row g-2">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Quantity</label>
+                        <input id="osrQty" type="number" min="1" class="form-control" value="1"/>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Fulfillment</label>
+                        <select id="osrFulfillment" class="form-select">
+                          <option value="pickup">Pickup</option>
+                          <option value="delivery">Delivery</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Send To (Partner)</label>
+                      <select id="osrPartner" class="form-select"></select>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Notes</label>
+                      <textarea id="osrNotes" class="form-control" rows="2" placeholder="Optional"></textarea>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-pharmacy" onclick="submitOSR()"><i class="bx bx-send me-2"></i>Request</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Clearance Modal -->
+            <div class="modal fade" id="clearanceModal" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title"><i class="bx bx-downvote me-2"></i>Clearance Sales</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Drug</label>
+                      <input id="clrDrug" list="drugOptionsClr" class="form-control" placeholder="Start typing..."/>
+                      <datalist id="drugOptionsClr"></datalist>
+                    </div>
+                    <div class="row g-2">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Offer Price (₦)</label>
+                        <input id="clrOffer" type="number" step="0.01" min="0" class="form-control"/>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Quantity</label>
+                        <input id="clrQty" type="number" min="1" class="form-control" value="1"/>
+                      </div>
+                    </div>
+                    <div class="row g-2">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Unit</label>
+                        <select id="clrUnit" class="form-select">
+                          <option>Pack</option>
+                          <option>Card</option>
+                          <option>Carton</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Expiry Date</label>
+                        <input id="clrExpiry" type="date" class="form-control"/>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Reason</label>
+                      <textarea id="clrReason" class="form-control" rows="2" placeholder="e.g., Near expiry, overstock, damaged pack..."></textarea>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-pharmacy" onclick="submitClearance()"><i class="bx bx-check me-2"></i>Publish</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Network -->
+            <div id="network" class="page-content">
+                <h4 class="fw-bold mb-4"><span class="text-muted fw-light">Pharmacy /</span> Network</h4>
+                <div class="row">
+                    <div class="col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header"><h5 class="mb-0">Invite to Network</h5></div>
+                            <div class="card-body">
+                                <form onsubmit="event.preventDefault(); addNetworkMember();">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="inviteEmail" placeholder="partner@pharmacy.com" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Partner Type</label>
+                                        <select class="form-select" id="inviteType">
+                                            <option value="pharmacy">Pharmacy</option>
+                                            <option value="hospital">Hospital</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-pharmacy w-100" type="submit"><i class="bx bx-send me-2"></i>Send Invite</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 mb-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Network Partners</h5>
+                                <div>
+                                    <select class="form-select form-select-sm w-auto" id="networkFilter" onchange="renderNetworkTable()">
+                                        <option value="all">All Partners</option>
+                                        <option value="pharmacy">Pharmacies</option>
+                                        <option value="hospital">Hospitals</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="networkTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prescriptions -->
+            <div id="prescriptions" class="page-content">
+                <h4 class="fw-bold mb-4"><span class="text-muted fw-light">Pharmacy /</span> E-Prescriptions</h4>
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <select class="form-select form-select-sm w-auto" id="rxStatusFilter" onchange="renderRxTable()">
+                                <option value="all">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="ready">Ready</option>
+                                <option value="dispensed">Dispensed</option>
+                                <option value="delivered">Delivered</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <input type="text" class="form-control form-control-sm w-auto" id="rxSearch" placeholder="Search patient/consultation/med" oninput="renderRxTable()"/>
+                        </div>
+                        <button class="btn btn-sm btn-pharmacy" onclick="openCreateRx()"><i class="bx bx-plus me-2"></i>New Prescription</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="rxTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Patient</th>
+                                        <th>Consultation</th>
+                                        <th>Medications</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory -->
+            <div id="inventory" class="page-content">
+                <h4 class="fw-bold mb-4"><span class="text-muted fw-light">Pharmacy /</span> Inventory</h4>
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <input type="text" class="form-control form-control-sm w-auto" id="invSearch" placeholder="Search product" oninput="renderInventoryTable()"/>
+                            <select class="form-select form-select-sm w-auto" id="invStockFilter" onchange="renderInventoryTable()">
+                                <option value="all">All</option>
+                                <option value="low">Low Stock</option>
+                                <option value="out">Out of Stock</option>
+                            </select>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#discountModal"><i class="bx bx-purchase-tag-alt me-2"></i>Discount Policy</button>
+                            <button class="btn btn-sm btn-pharmacy" onclick="openAddInventory()"><i class="bx bx-plus me-2"></i>Add Item</button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="openClearanceModal()"><i class="bx bx-downvote me-2"></i>Clearance Sales</button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="openOSRModal()"><i class="bx bx-package me-2"></i>Out of Stock Request</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="inventoryTable">
+                                <thead>
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th>Name</th>
+                                        <th>Stock</th>
+                                        <th>Reorder</th>
+                                        <th>Prices</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monitoring -->
+            <div id="monitoring" class="page-content">
+                <h4 class="fw-bold mb-4"><span class="text-muted fw-light">Pharmacy /</span> Patient Monitoring</h4>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <select class="form-select form-select-sm w-auto" id="monFilter" onchange="renderMonitoringTable()">
+                                <option value="all">All</option>
+                                <option value="low_stock">Low Stock</option>
+                                <option value="abnormal_vitals">Abnormal Vitals</option>
+                                <option value="non_compliant">Non-compliant</option>
+                            </select>
+                            <input type="text" class="form-control form-control-sm w-auto" id="patientSearch" placeholder="Search patients..." oninput="renderMonitoringTable()" style="min-width: 200px;"/>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerPatientModal"><i class="bx bx-user-plus me-2"></i>Register Patient</button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="openCreateRx()"><i class="bx bx-plus me-2"></i>Issue Prescription</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="monitoringTable">
+                                <thead>
+                                    <tr>
+                                        <th>Patient</th>
+                                        <th>Condition</th>
+                                        <th>Last BP / Sugar</th>
+                                        <th>Inventory</th>
+                                        <th>Alerts</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rewards -->
+            <div id="rewards" class="page-content">
+                <h4 class="fw-bold mb-4"><span class="text-muted fw-light">Pharmacy /</span> Doctor Rewards</h4>
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card"><div class="card-body"><div class="d-flex justify-content-between"><div><span>Total Rewards</span><h4 class="mb-0 mt-2">₦1,240.00</h4></div><span class="avatar"><span class="avatar-initial rounded bg-label-success"><i class="bx bx-gift bx-sm"></i></span></span></div></div></div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card"><div class="card-body"><div class="d-flex justify-content-between"><div><span>Doctors</span><h4 class="mb-0 mt-2">18</h4></div><span class="avatar"><span class="avatar-initial rounded bg-label-primary"><i class="bx bx-user bx-sm"></i></span></span></div></div></div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card"><div class="card-body"><div class="d-flex justify-content-between"><div><span>Pending Payout</span><h4 class="mb-0 mt-2">₦320.00</h4></div><span class="avatar"><span class="avatar-initial rounded bg-label-warning"><i class="bx bx-time bx-sm"></i></span></span></div></div></div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card"><div class="card-body"><div class="d-flex justify-content-between"><div><span>Paid Out</span><h4 class="mb-0 mt-2">₦920.00</h4></div><span class="avatar"><span class="avatar-initial rounded bg-label-info"><i class="bx bx-wallet bx-sm"></i></span></span></div></div></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Rewards History</h5>
+                        <select class="form-select form-select-sm w-auto" id="rewardsFilter" onchange="renderRewardsTable()">
+                            <option value="all">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="rewardsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Doctor</th>
+                                        <th>Prescription</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div id="messages" class="page-content">
+                <h4 class="fw-bold mb-4"><span class="text-muted fw-light">Pharmacy /</span> Messages</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <input class="form-control mb-2" id="msgSearch" placeholder="Search threads" oninput="renderThreads()" />
+                                <div id="threadsList" class="list-group small threads-list"></div>
+                            </div>
+                            <div class="col-md-8 d-flex flex-column" style="height:460px;">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <h6 id="threadTitle" class="mb-0 text-muted">No thread selected</h6>
+                                </div>
+                                <div id="chatPane" class="chat-pane p-3 mb-2"></div>
+                                <div class="input-group">
+                                    <input id="chatInput" class="form-control" placeholder="Type a message..." onkeydown="if(event.key==='Enter'){sendMessage()}" disabled />
+                                    <button class="btn btn-pharmacy" onclick="sendMessage()"><i class="bx bx-send"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings (Virtual Pharmacy) -->
+            <div id="settings" class="page-content">
+                <h4 class="fw-bold mb-4"><span class="text-muted fw-light">Pharmacy /</span> Virtual Pharmacy Settings</h4>
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header"><h5 class="mb-0">Branding & Defaults</h5></div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Default Doctor Markup (%)</label>
+                                    <input type="number" class="form-control" id="vpMarkup" min="0" max="100" step="1" value="15">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Default Delivery Fee (₦)</label>
+                                    <input type="number" class="form-control" id="vpDeliveryFee" min="0" step="50" value="1500">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Storefront Logo URL</label>
+                                    <input type="url" class="form-control" id="vpLogo" placeholder="https://...">
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-pharmacy" onclick="saveVirtualSettings()"><i class="bx bx-save me-2"></i>Save</button>
+                                    <button class="btn btn-outline-primary" onclick="alert('QR generated (demo)')"><i class="bx bx-qr me-2"></i>Generate QR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Linked partners</h5>
+                                <small class="text-muted">Used for out-of-stock routing (pharmacies, hospitals)</small>
+                            </div>
+                            <div class="card-body">
+                                <div id="vpPartners" class="d-flex flex-column gap-2"></div>
+                                <small class="text-muted d-block mt-2">Partners are sourced from your Network (Pharmacies, Hospitals).</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Demo Modals -->
+    <!-- Create E‑Prescription Modal -->
+    <div class="modal fade" id="createRxModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Create E‑Prescription <span id="rxfMedCount" class="badge bg-light text-dark ms-2">0 meds</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+          <div class="modal-body">
+            <form id="rxForm" onsubmit="event.preventDefault(); submitCreateRx();">
+              <div class="row g-3">
+                <div class="col-md-4"><label class="form-label">Patient</label><input id="rxfPatient" class="form-control" placeholder="e.g., John Smith" required></div>
+                <div class="col-md-4"><label class="form-label">Consultation Type</label><select id="rxfConsultation" class="form-select"><option value="online">Online</option><option value="physical">Physical</option></select></div>
+                <div class="col-md-4"><label class="form-label">Fulfillment</label><select id="rxfFulfillment" class="form-select"><option value="pickup">Pickup</option><option value="delivery">Delivery</option></select></div>
+                <div class="col-12"><hr class="my-2"><h6 class="mb-2">Medication</h6></div>
+                <div class="col-md-4"><label class="form-label">Drug Name</label><input list="drugOptions" id="rxfDrug" class="form-control" placeholder="Search or type" required><datalist id="drugOptions"></datalist></div>
+                <div class="col-md-3"><label class="form-label">Type</label><select id="rxfType" class="form-select" onchange="onTypeChange()" required><option>Tablet</option><option>Syrup</option><option>Capsule</option><option>Injection</option><option>Suppository</option><option>Pessary</option></select></div>
+                <div class="col-md-3"><label class="form-label">Dosage</label><input list="dosageOptions" id="rxfDosage" class="form-control" placeholder="e.g., 500 mg or 10 ml"><datalist id="dosageOptions"></datalist></div>
+                <div class="col-md-2"><label class="form-label">Qty (auto)</label><input id="rxfQty" type="number" class="form-control" value="1" readonly></div>
+                <div class="col-md-4"><label class="form-label">Freq (per day)</label><select id="rxfFreqDay" class="form-select" onchange="syncFreqTime()"><option value="1">OD (1x/day)</option><option value="2">BD (2x/day)</option><option value="3">TDS (3x/day)</option><option value="4">QDS (4x/day)</option></select></div>
+                <div class="col-md-4"><label class="form-label">Freq (per time)</label><select id="rxfFreqTime" class="form-select"><option>24-hourly</option><option>12-hourly</option><option>8-hourly</option><option>6-hourly</option></select></div>
+                <div class="col-md-4"><label class="form-label">Duration</label><div class="input-group"><input id="rxfDurationVal" type="number" min="1" class="form-control" value="7"><select id="rxfDurationUnit" class="form-select" onchange="updateDurationExample()"><option value="days">Days</option><option value="weeks">Weeks</option><option value="months">Months</option></select></div><small id="rxfDurationExample" class="text-muted">e.g., 1/7</small></div>
+                <div class="col-12"><label class="form-label">Instructions</label><input id="rxfNotes" class="form-control" placeholder="e.g., after meals"></div>
+                <div class="col-12 d-flex justify-content-end">
+                  <button type="button" class="btn btn-outline-primary" onclick="addMedicationFromForm()"><i class="bx bx-plus me-2"></i>Add Medication</button>
+                </div>
+                <div class="col-12">
+                  <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th>Medication</th>
+                          <th>Qty</th>
+                          <th>Frequency</th>
+                          <th>Duration</th>
+                          <th>Notes</th>
+                          <th style="width:100px">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="rxfMedList"></tbody>
+                    </table>
+                  </div>
+                  <small class="text-muted">Add one or more medications, then click Save Prescription.</small>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-pharmacy" onclick="submitCreateRx()">Save Prescription</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- RX Details / Fulfillment -->
+    <div class="modal fade" id="rxDetailModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Prescription Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">RX ID</label>
+                <input class="form-control" id="rxmId" readonly>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Patient</label>
+                <input class="form-control" id="rxmPatient" readonly>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Doctor</label>
+                <input class="form-control" id="rxmDoctor" readonly>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Items</label>
+                <textarea class="form-control" id="rxmItems" rows="2"></textarea>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Fulfillment</label>
+                <select class="form-select" id="rxmFulfillment">
+                  <option value="pickup">Pickup</option>
+                  <option value="delivery">Delivery</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Delivery Fee (₦)</label>
+                <input type="number" class="form-control" id="rxmDeliveryFee" min="0" step="50" value="1500">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Address (for delivery)</label>
+                <input class="form-control" id="rxmAddress" placeholder="123 Main St, City">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select class="form-select" id="rxmStatus">
+                  <option value="pending">Pending</option>
+                  <option value="processing">Processing</option>
+                  <option value="ready">Ready</option>
+                  <option value="dispensed">Dispensed</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+            <hr>
+            <div id="rxmTimeline" class="small text-muted">Timeline: Created → Received</div>
+          </div>
+          <div class="modal-footer d-flex justify-content-between">
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-secondary" onclick="openRouteModal()"><i class="bx bx-share-alt me-2"></i>Route to Partner</button>
+              <button class="btn btn-outline-primary" onclick="openInvoiceFromRx()"><i class="bx bx-file me-2"></i>Generate Invoice</button>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-primary" onclick="stepRxStatus(-1)">Prev</button>
+              <button class="btn btn-pharmacy" onclick="stepRxStatus(1)">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoice Modal -->
+    <div class="modal fade" id="invoiceModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Invoice</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+          <div class="modal-body">
+            <div class="mb-2"><strong>RX:</strong> <span id="invRx"></span></div>
+            <div class="mb-2"><strong>Patient:</strong> <span id="invPatient"></span></div>
+            <div class="mb-2"><strong>Items:</strong> <span id="invItems"></span></div>
+            <div class="mb-2"><strong>Base Total:</strong> <span id="invBase"></span></div>
+            <div class="mb-2"><strong>Doctor Markup:</strong> <span id="invMarkupPct"></span>% (<span id="invMarkup"></span>)</div>
+            <div class="mb-2"><strong>Delivery Fee:</strong> <span id="invDelivery"></span></div>
+            <hr>
+            <div class="h5">Grand Total: <span id="invGrand"></span></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline-primary" onclick="alert('Invoice sent (demo)')">Send to Patient/Guardian</button>
+            <button class="btn btn-pharmacy" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Discount Policy Modal -->
+    <div class="modal fade" id="discountModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Discount Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Doctor Discount (%)</label>
+              <input type="number" class="form-control" id="discDoctor" value="10" min="0" max="100">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Wholesale Discount (%)</label>
+              <input type="number" class="form-control" id="discWholesale" value="20" min="0" max="100">
+            </div>
+            <small class="text-muted">Applies to all items (demo).</small>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-pharmacy" onclick="applyDiscountPolicy()" data-bs-dismiss="modal">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Route to Partner Modal -->
+    <div class="modal fade" id="routeModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Route Prescription</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+          <div class="modal-body">
+            <p class="text-muted">Select a partner pharmacy/hospital to fulfill this prescription due to stock-out.</p>
+            <div id="routePartnerList" class="d-flex flex-column gap-2"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-pharmacy" data-bs-dismiss="modal" onclick="alert('Routed (demo)')">Confirm Route</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Patient Modal -->
+    <div class="modal fade" id="registerPatientModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Register Patient</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+          <div class="modal-body">
+            <div class="mb-3"><label class="form-label">Full Name</label><input class="form-control" id="rpName"></div>
+            <div class="mb-3"><label class="form-label">Condition</label><input class="form-control" id="rpCondition" placeholder="e.g., Hypertension"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-pharmacy" onclick="registerPatient()" data-bs-dismiss="modal">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consultation Modal -->
+    <div class="modal fade" id="consultModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Schedule Consultation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Patient</label>
+              <input class="form-control" id="consultPatient" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Consultation Type</label>
+              <select class="form-select" id="consultType" onchange="toggleConsultFields()">
+                <option value="virtual">Virtual Consultation</option>
+                <option value="physical">Physical Consultation</option>
+              </select>
+            </div>
+            
+            <!-- Virtual Consultation Fields -->
+            <div id="virtualFields">
+              <div class="mb-3">
+                <label class="form-label">Meeting Date & Time</label>
+                <input type="datetime-local" class="form-control" id="virtualDateTime">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Meeting Link</label>
+                <div class="input-group">
+                  <input class="form-control" id="virtualLink" readonly>
+                  <button class="btn btn-outline-secondary" type="button" onclick="generateMeetingLink()">Generate</button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Physical Consultation Fields -->
+            <div id="physicalFields" style="display: none;">
+              <div class="mb-3">
+                <label class="form-label">Appointment Date & Time</label>
+                <input type="datetime-local" class="form-control" id="physicalDateTime">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Meeting Location</label>
+                <input class="form-control" id="meetingLocation" placeholder="e.g., Pharmacy Office, Room 1">
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Consultation Notes</label>
+              <textarea class="form-control" id="consultNotes" rows="3" placeholder="Reason for consultation, abnormal vitals discussion, etc."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-pharmacy" onclick="scheduleConsultation()">Schedule Consultation</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Partner Details Modal -->
+    <div class="modal fade" id="partnerDetailsModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Partner Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6 id="partnerName" class="text-primary mb-3"></h6>
+                <div class="mb-2"><strong>Type:</strong> <span id="partnerType" class="text-capitalize"></span></div>
+                <div class="mb-2"><strong>Status:</strong> <span id="partnerStatus"></span></div>
+                <div class="mb-2"><strong>Address:</strong> <span id="partnerAddress"></span></div>
+                <div class="mb-2"><strong>Phone:</strong> <span id="partnerPhone"></span></div>
+                <div class="mb-2"><strong>Email:</strong> <span id="partnerEmail"></span></div>
+                <div class="mb-2"><strong>Rating:</strong> <span id="partnerRating"></span></div>
+                <div class="mb-2"><strong>Established:</strong> <span id="partnerEstablished"></span></div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <strong>Specialties:</strong>
+                  <div id="partnerSpecialties" class="mt-1"></div>
+                </div>
+                <div class="mb-3" id="partnerInventorySection">
+                  <strong>Available Inventory:</strong>
+                  <div id="partnerInventory" class="mt-1"></div>
+                </div>
+                <div class="mb-3" id="partnerDepartmentsSection" style="display: none;">
+                  <strong>Departments:</strong>
+                  <div id="partnerDepartments" class="mt-1"></div>
+                </div>
+                <div class="mb-3" id="partnerBedsSection" style="display: none;">
+                  <strong>Bed Capacity:</strong> <span id="partnerBeds"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button class="btn btn-outline-primary" onclick="navigateToChat()">
+              <i class="bx bx-message me-2"></i>Chat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Register Patient Modal -->
+    <div class="modal fade" id="registerPatientModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Register New Patient</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="patientRegistrationForm">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label">Full Name *</label>
+                    <input class="form-control" id="rpName" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Date of Birth *</label>
+                    <input type="date" class="form-control" id="rpDob" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Gender *</label>
+                    <select class="form-select" id="rpGender" required>
+                      <option value="">Select Gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Phone Number *</label>
+                    <input type="tel" class="form-control" id="rpPhone" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="rpEmail">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <textarea class="form-control" id="rpAddress" rows="2"></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Primary Condition</label>
+                    <input class="form-control" id="rpCondition" placeholder="e.g., Hypertension, Diabetes">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Allergies</label>
+                    <textarea class="form-control" id="rpAllergies" rows="2" placeholder="List any known allergies"></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Emergency Contact Name</label>
+                    <input class="form-control" id="rpEmergencyName">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Emergency Contact Phone</label>
+                    <input type="tel" class="form-control" id="rpEmergencyPhone">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-pharmacy" onclick="registerPatient()">Register Patient</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vitals History Modal -->
+    <div class="modal fade" id="vitalsHistoryModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Patient Vitals History</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <h6 id="vitalsPatientName" class="text-primary"></h6>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Blood Pressure</th>
+                    <th>Sugar Level</th>
+                    <th>Heart Rate</th>
+                    <th>Temperature</th>
+                    <th>Weight</th>
+                    <th>Cholesterol</th>
+                    <th>HDL</th>
+                    <th>LDL</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="vitalsHistoryBody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button class="btn btn-outline-primary" onclick="exportVitalsHistory()">Export History</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        function showPage(e, pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Add active class to clicked nav link
+            if (e && e.currentTarget) e.currentTarget.classList.add('active');
+        }
+
+        // Demo data & config
+        let vpSettings = { markupPct: 15, deliveryFee: 1500, logo: '' };
+        function formatNaira(n){ const num = Number(n||0); return '₦' + num.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+        let discountPolicy = { doctor: 10, wholesale: 20 };
+        // Make networkMembers mutable to allow backend-loaded partners
+        let networkMembers = [
+            { 
+                id: 'ph001',
+                name: 'MediCare Pharmacy', 
+                type: 'pharmacy', 
+                status: 'Active',
+                address: '123 Health Street, Lagos, Nigeria',
+                phone: '+234-801-234-5678',
+                email: 'contact@medicare.ng',
+                specialties: ['General Medications', 'Diabetes Care', 'Hypertension'],
+                inventory: ['Metformin 850mg', 'Lisinopril 10mg', 'Amlodipine 5mg'],
+                rating: 4.8,
+                established: '2018'
+            },
+            { 
+                id: 'hp001',
+                name: 'St. Mary General Hospital', 
+                type: 'hospital', 
+                status: 'Active',
+                address: '456 Medical Avenue, Abuja, Nigeria',
+                phone: '+234-802-345-6789',
+                email: 'admin@stmary.ng',
+                specialties: ['Emergency Care', 'Cardiology', 'Internal Medicine'],
+                departments: ['Emergency', 'ICU', 'Cardiology', 'General Medicine'],
+                beds: 150,
+                rating: 4.6,
+                established: '2010'
+            },
+            { 
+                id: 'ph002',
+                name: 'HealthPlus Pharmacy', 
+                type: 'pharmacy', 
+                status: 'Active',
+                address: '789 Wellness Road, Port Harcourt, Nigeria',
+                phone: '+234-803-456-7890',
+                email: 'info@healthplus.ng',
+                specialties: ['Pediatric Care', 'Geriatric Medications', 'Chronic Disease Management'],
+                inventory: ['Paracetamol 500mg', 'Ibuprofen 400mg', 'Insulin'],
+                rating: 4.7,
+                established: '2020'
+            }
+        ];
+
+        // Basic helpers for backend integration
+        function getCookie(name){
+            const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'));
+            return match ? decodeURIComponent(match[1]) : '';
+        }
+        function getCreds(){
+            return { uid: getCookie('uid')||'', auth: getCookie('authen')||'' };
+        }
+        async function postJSON(url, data){
+            const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            return res.json();
+        }
+        async function loadPartners(){
+            const { uid, auth } = getCreds();
+            if(!uid || !auth) return; // stay demo-only if no cookies
+            try{
+                const params = new URLSearchParams({ uid, auth });
+                const res = await fetch('/api/pharmacy/partners?' + params.toString());
+                const j = await res.json();
+                if(j.status === 'success' && Array.isArray(j.partners)){
+                    // Replace pharmacy/hospital partners from backend
+                    const mapped = j.partners.map(p=>({ 
+                        id: p.id, 
+                        name: p.name, 
+                        type: p.type, 
+                        status: 'Active',
+                        address: p.address || '',
+                        phone: p.phone || '',
+                        email: p.email || '',
+                        specialties: p.specialties || [],
+                        inventory: p.inventory || [],
+                        rating: p.rating || 0
+                    }));
+                    networkMembers = mapped;
+                    renderNetworkTable();
+                    renderVpPartners();
+                }
+            }catch(e){
+                // ignore and keep demo
+            }
+        }
+
+        const prescriptions = [
+            {
+              id: 'RX-2025', patient: 'John Smith', doctor: 'Dr. Wilson', consultationType: 'online',
+              meds: [
+                { drug:'Amoxicillin', type:'Capsule', dosage:'500 mg', qty:14, freqDay:3, freqTime:'8-hourly', durationVal:5, durationUnit:'days', notes:'after meal', base: 9.5 },
+                { drug:'Paracetamol', type:'Tablet', dosage:'500 mg', qty:10, freqDay:3, freqTime:'8-hourly', durationVal:3, durationUnit:'days', notes:'prn pain', base: 4.2 },
+              ],
+              baseTotal: 13.7, status: 'pending', date: 'Today 10:30'
+            },
+            {
+              id: 'RX-2024', patient: 'Mary Davis', doctor: 'Dr. Johnson', consultationType: 'physical',
+              meds: [
+                { drug:'Lisinopril', type:'Tablet', dosage:'10 mg', qty:30, freqDay:1, freqTime:'24-hourly', durationVal:30, durationUnit:'days', notes:'morning', base: 12.0 }
+              ],
+              baseTotal: 12.0, status: 'ready', date: 'Today 09:15'
+            },
+            {
+              id: 'RX-2023', patient: 'Robert Brown', doctor: 'Dr. Smith', consultationType: 'online',
+              meds: [
+                { drug:'Metformin', type:'Tablet', dosage:'850 mg', qty:60, freqDay:2, freqTime:'12-hourly', durationVal:30, durationUnit:'days', notes:'after meal', base: 11.8 }
+              ],
+              baseTotal: 11.8, status: 'processing', date: 'Yesterday 16:20'
+            }
+        ];
+
+        // Seeded drug catalog (static list for demo)
+        const drugCatalog = [
+          'Amlodipine','Lisinopril','Losartan','Hydrochlorothiazide',
+          'Metformin','Glimepiride','Insulin',
+          'Atorvastatin','Simvastatin','Amoxicillin','Ciprofloxacin','Paracetamol',
+          'Ibuprofen','Aspirin','Omeprazole','Salbutamol'
+        ];
+
+        // OSR and Clearance demo stores
+        const osrRequests = [];
+        const clearanceSales = [];
+
+        // Messaging demo stores
+        let threads = [
+          { id: 't1', name: 'Dr. Johnson', type: 'doctor', unread: 1, messages: [
+            { from: 'them', text: 'Please prioritize RX-1023.', ts: '16:10' },
+            { from: 'me', text: 'Will be ready in 30 mins.', ts: '16:20' }
+          ]},
+          { id: 't2', name: 'St. Mary Hospital', type: 'hospital', unread: 0, messages: [
+            { from: 'them', text: 'Can you supply 100 packs of Paracetamol?', ts: 'Yesterday' }
+          ]}
+        ];
+
+        const inventory = [
+            { sku: 'PAR-500', name: 'Paracetamol 500mg', stock: 8, reorder: 20, basePrice: 2.50 },
+            { sku: 'IBU-400', name: 'Ibuprofen 400mg', stock: 3, reorder: 15, basePrice: 3.20 },
+            { sku: 'ASP-075', name: 'Aspirin 75mg', stock: 12, reorder: 25, basePrice: 1.80 },
+            { sku: 'MET-850', name: 'Metformin 850mg', stock: 45, reorder: 20, basePrice: 4.10 },
+        ];
+
+        const monitoring = [
+            { 
+                id: 'pt001',
+                patient: 'John Smith', 
+                condition: 'Hypertension', 
+                bp: '150/95', 
+                sugar: '—',
+                heartRate: '78 bpm',
+                temperature: '98.6°F',
+                weight: '180 lbs', 
+                inventory: 'Lisinopril 10mg (4 days left)', 
+                alerts: ['Abnormal BP','Low stock'],
+                profile: {
+                    dob: '1975-03-15',
+                    gender: 'male',
+                    phone: '+234-801-111-2222',
+                    email: 'john.smith@email.com',
+                    address: '12 Lagos Street, Victoria Island, Lagos',
+                    allergies: 'Penicillin',
+                    emergencyContact: 'Jane Smith (+234-802-111-3333)'
+                },
+                vitalsHistory: [
+                    { date: '2025-01-08', bp: '150/95', sugar: '—', heartRate: '78', temperature: '98.6', weight: '180', cholesterol: '220', hdl: '45', ldl: '150', notes: 'High BP reading' },
+                    { date: '2025-01-05', bp: '148/92', sugar: '—', heartRate: '76', temperature: '98.4', weight: '179', cholesterol: '—', hdl: '—', ldl: '—', notes: 'Slightly elevated' },
+                    { date: '2025-01-01', bp: '145/90', sugar: '—', heartRate: '74', temperature: '98.2', weight: '178', cholesterol: '215', hdl: '48', ldl: '145', notes: 'Regular checkup' }
+                ]
+            },
+            { 
+                id: 'pt002',
+                patient: 'Mary Davis', 
+                condition: 'Diabetes', 
+                bp: '120/80', 
+                sugar: '190 mg/dL',
+                heartRate: '82 bpm',
+                temperature: '99.1°F',
+                weight: '145 lbs', 
+                inventory: 'Metformin 850mg (2 days left)', 
+                alerts: ['Abnormal Sugar','Low stock'],
+                profile: {
+                    dob: '1982-07-22',
+                    gender: 'female',
+                    phone: '+234-803-222-3333',
+                    email: 'mary.davis@email.com',
+                    address: '45 Abuja Close, Garki, Abuja',
+                    allergies: 'None known',
+                    emergencyContact: 'David Davis (+234-804-222-4444)'
+                },
+                vitalsHistory: [
+                    { date: '2025-01-08', bp: '120/80', sugar: '190', heartRate: '82', temperature: '99.1', weight: '145', cholesterol: '180', hdl: '55', ldl: '110', notes: 'High glucose level' },
+                    { date: '2025-01-06', bp: '118/78', sugar: '185', heartRate: '80', temperature: '98.8', weight: '144', cholesterol: '—', hdl: '—', ldl: '—', notes: 'Trending high' },
+                    { date: '2025-01-03', bp: '115/75', sugar: '180', heartRate: '78', temperature: '98.6', weight: '143', cholesterol: '175', hdl: '58', ldl: '105', notes: 'Regular monitoring' }
+                ]
+            },
+            { 
+                id: 'pt003',
+                patient: 'Robert Brown', 
+                condition: 'Hypertension', 
+                bp: '145/92', 
+                sugar: '—',
+                heartRate: '85 bpm',
+                temperature: '98.8°F',
+                weight: '195 lbs', 
+                inventory: 'Amlodipine 5mg (12 days left)', 
+                alerts: ['Abnormal BP'],
+                profile: {
+                    dob: '1968-11-10',
+                    gender: 'male',
+                    phone: '+234-805-333-4444',
+                    email: 'robert.brown@email.com',
+                    address: '78 Port Harcourt Road, GRA, Port Harcourt',
+                    allergies: 'Sulfa drugs',
+                    emergencyContact: 'Sarah Brown (+234-806-333-5555)'
+                },
+                vitalsHistory: [
+                    { date: '2025-01-08', bp: '145/92', sugar: '—', heartRate: '85', temperature: '98.8', weight: '195', cholesterol: '240', hdl: '42', ldl: '165', notes: 'Elevated BP' },
+                    { date: '2025-01-04', bp: '142/88', sugar: '—', heartRate: '83', temperature: '98.6', weight: '194', cholesterol: '—', hdl: '—', ldl: '—', notes: 'Improving' },
+                    { date: '2025-01-01', bp: '150/95', sugar: '—', heartRate: '88', temperature: '99.0', weight: '196', cholesterol: '245', hdl: '40', ldl: '170', notes: 'Initial reading' }
+                ]
+            },
+        ];
+
+        const rewards = [
+            { date: '2025-08-10', doctor: 'Dr. Wilson', rx: 'RX-1018', amount: 25.00, status: 'paid' },
+            { date: '2025-08-12', doctor: 'Dr. Johnson', rx: 'RX-1019', amount: 18.00, status: 'pending' },
+            { date: '2025-08-15', doctor: 'Dr. Smith', rx: 'RX-1020', amount: 32.50, status: 'paid' },
+        ];
+
+        // Temp store for building a multi-med prescription in the modal
+        let currentRxMeds = [];
+
+        function summarizeMed(m){
+            return `${m.drug} (${m.type}, ${m.dosage}) x ${m.qty} — ${m.freqDay}x/day (${m.freqTime}) for ${m.durationVal} ${m.durationUnit}` + (m.notes?` — ${m.notes}`:'');
+        }
+
+        function renderRxfMedList(){
+            const tbody = document.getElementById('rxfMedList'); if(!tbody) return;
+            tbody.innerHTML = '';
+            currentRxMeds.forEach((m, idx)=>{
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                  <td>${m.drug} <span class="text-muted small">(${m.type}, ${m.dosage})</span></td>
+                  <td>${m.qty}</td>
+                  <td>${m.freqDay}x/day <span class="text-muted">(${m.freqTime})</span></td>
+                  <td>${m.durationVal} ${m.durationUnit}</td>
+                  <td>${m.notes||''}</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editRxfMed(${idx})">Edit</button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="removeRxfMed(${idx})">Remove</button>
+                  </td>`;
+                tbody.appendChild(tr);
+            });
+            const badge = document.getElementById('rxfMedCount');
+            if(badge){ badge.textContent = `${currentRxMeds.length} ${currentRxMeds.length===1?'med':'meds'}`; }
+        }
+
+        function addMedicationFromForm(){
+            const drug = document.getElementById('rxfDrug').value.trim();
+            const type = document.getElementById('rxfType').value;
+            const dosage = document.getElementById('rxfDosage').value;
+            // compute qty from freq x duration
+            const perDay = parseInt(document.getElementById('rxfFreqDay').value||'1',10);
+            const durVal = parseInt(document.getElementById('rxfDurationVal').value||'7',10);
+            const durUnit = document.getElementById('rxfDurationUnit').value;
+            const qty = computeQty(perDay, durVal, durUnit);
+            const freqDay = parseInt(document.getElementById('rxfFreqDay').value||'1',10);
+            const freqTime = document.getElementById('rxfFreqTime').value;
+            const durationVal = parseInt(document.getElementById('rxfDurationVal').value||'7',10);
+            const durationUnit = document.getElementById('rxfDurationUnit').value;
+            const notes = document.getElementById('rxfNotes').value;
+            if(!drug){ alert('Please enter a drug.'); return; }
+            currentRxMeds.push({ drug, type, dosage, qty, freqDay, freqTime, durationVal, durationUnit, notes });
+            // clear quick-entry fields except type/freq/duration
+            document.getElementById('rxfDrug').value='';
+            document.getElementById('rxfDosage').value='';
+            document.getElementById('rxfQty').value = qty;
+            renderRxfMedList();
+        }
+
+        function editRxfMed(idx){
+            const m = currentRxMeds[idx]; if(!m) return;
+            document.getElementById('rxfDrug').value = m.drug;
+            document.getElementById('rxfType').value = m.type; onTypeChange();
+            document.getElementById('rxfDosage').value = m.dosage;
+            document.getElementById('rxfQty').value = m.qty;
+            document.getElementById('rxfFreqDay').value = String(m.freqDay); syncFreqTime();
+            document.getElementById('rxfFreqTime').value = m.freqTime;
+            document.getElementById('rxfDurationVal').value = m.durationVal;
+            document.getElementById('rxfDurationUnit').value = m.durationUnit; updateDurationExample();
+            document.getElementById('rxfNotes').value = m.notes||'';
+            // Remove from list; user will click Add again to re-commit the edited med
+            currentRxMeds.splice(idx,1);
+            renderRxfMedList();
+        }
+
+        function removeRxfMed(idx){ currentRxMeds.splice(idx,1); renderRxfMedList(); }
+
+        // Render helpers
+        function renderNetworkTable(){
+            const filter = document.getElementById('networkFilter').value;
+            const tbody = document.querySelector('#networkTable tbody');
+            tbody.innerHTML = '';
+            networkMembers
+              .filter(m => filter === 'all' ? true : m.type === filter)
+              .forEach(m => {
+                const tr = document.createElement('tr');
+                const statusBadge = m.status === 'Active' ? 'bg-success' : 'bg-warning';
+                tr.innerHTML = `
+                  <td>${m.name}</td>
+                  <td class="text-capitalize">${m.type}</td>
+                  <td><span class="badge ${statusBadge}">${m.status}</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary me-2" onclick="viewPartnerDetails('${m.id}')">View</button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="removePartner('${m.id}')">Remove</button>
+                  </td>`;
+                tbody.appendChild(tr);
+              });
+        }
+
+        function addNetworkMember(){
+            const email = document.getElementById('inviteEmail').value.trim();
+            const type = document.getElementById('inviteType').value;
+            if(!email) return;
+            networkMembers.push({ name: email, type, status: 'Pending' });
+            (document.getElementById('inviteEmail')).value = '';
+            renderNetworkTable();
+        }
+
+        function renderRxTable(){
+            const status = document.getElementById('rxStatusFilter').value;
+            const q = (document.getElementById('rxSearch').value||'').toLowerCase();
+            const tbody = document.querySelector('#rxTable tbody');
+            tbody.innerHTML = '';
+            prescriptions
+              .filter(r => status==='all' ? true : r.status===status)
+              .filter(r => [r.patient,r.consultationType||'',r.id, String(r.meds?.length||0)].some(v => String(v).toLowerCase().includes(q)))
+              .forEach(r => {
+                const main = document.createElement('tr');
+                const badge = {
+                    pending:'bg-warning',processing:'bg-info',ready:'bg-primary',dispensed:'bg-success',delivered:'bg-success',cancelled:'bg-danger'
+                }[r.status]||'bg-secondary';
+                main.className = 'rx-row';
+                main.innerHTML = `
+                  <td>${r.id}</td>
+                  <td>${r.patient}</td>
+                  <td class="text-capitalize">${r.consultationType||'online'}</td>
+                  <td>${r.meds?.length||0} meds</td>
+                  <td><span class="badge ${badge} text-uppercase">${r.status}</span></td>
+                  <td>${r.date}</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary me-2" onclick="openRx('${r.id}')">Open</button>
+                    <button class="btn btn-sm btn-outline-success" onclick="updateRxStatus('${r.id}','ready')">Mark Ready</button>
+                  </td>`;
+                const detail = document.createElement('tr');
+                const cols = 7; // match number of tds above
+                const medsRows = (r.meds||[]).map((m,i)=>`<tr><td>${i+1}</td><td>${m.drug}</td><td>${m.type}</td><td>${m.dosage}</td><td>${m.qty}</td><td>${m.freqDay}x/day (${m.freqTime})</td><td>${m.durationVal} ${m.durationUnit}</td><td>${m.notes||''}</td></tr>`).join('');
+                detail.innerHTML = `<td colspan="${cols}" class="bg-light">
+                  <div class="p-2">
+                    <div class="small text-muted mb-2">Medications</div>
+                    <div class="table-responsive">
+                      <table class="table table-sm table-bordered mb-0">
+                        <thead><tr><th>#</th><th>Drug</th><th>Type</th><th>Dosage</th><th>Qty</th><th>Frequency</th><th>Duration</th><th>Notes</th></tr></thead>
+                        <tbody>${medsRows||'<tr><td colspan="8" class="text-center text-muted">No meds</td></tr>'}</tbody>
+                      </table>
+                    </div>
+                  </div>
+                </td>`;
+                detail.style.display = 'none';
+                main.onclick = (e)=>{
+                    // prevent clicks on buttons from toggling
+                    if((e.target instanceof HTMLElement) && e.target.tagName.toLowerCase()==='button') return;
+                    detail.style.display = detail.style.display==='none' ? '' : 'none';
+                };
+                tbody.appendChild(main);
+                tbody.appendChild(detail);
+              });
+        }
+
+        function openCreateRx(patientName){
+            // populate drug datalist and defaults
+            const dl = document.getElementById('drugOptions');
+            dl.innerHTML = '';
+            drugCatalog.forEach(d=>{ const o=document.createElement('option'); o.value=d; dl.appendChild(o); });
+            document.getElementById('rxfType').value = 'Tablet';
+            onTypeChange();
+            syncFreqTime();
+            updateDurationExample();
+            recalcQty();
+            if(typeof patientName === 'string' && patientName.trim()){
+                document.getElementById('rxfPatient').value = patientName.trim();
+            }
+            currentRxMeds = [];
+            renderRxfMedList();
+            new bootstrap.Modal(document.getElementById('createRxModal')).show();
+        }
+
+        function onTypeChange(){
+            const type = document.getElementById('rxfType').value;
+            const dl = document.getElementById('dosageOptions');
+            const options = {
+                'Tablet': ['5 mg','10 mg','20 mg','50 mg'],
+                'Capsule': ['5 mg','10 mg','20 mg'],
+                'Syrup': ['5 ml','10 ml','20 ml'],
+                'Injection': ['1 ml','2 ml','5 ml'],
+                'Suppository': ['100 mg','200 mg'],
+                'Pessary': ['100 mg','200 mg'],
+            }[type] || [];
+            dl.innerHTML = '';
+            options.forEach(v=>{ const o=document.createElement('option'); o.value=v; dl.appendChild(o); });
+            // Keep free-text; do not force a selection
+        }
+
+        function syncFreqTime(){
+            const perDay = parseInt(document.getElementById('rxfFreqDay').value,10);
+            const ft = document.getElementById('rxfFreqTime');
+            const map = {1:'24-hourly',2:'12-hourly',3:'8-hourly',4:'6-hourly'};
+            const val = map[perDay] || '12-hourly';
+            [...ft.options].forEach((o)=>{ if(o.text===val) ft.value = o.text; });
+            recalcQty();
+        }
+
+        function updateDurationExample(){
+            const v = parseInt(document.getElementById('rxfDurationVal').value||'1',10);
+            const u = document.getElementById('rxfDurationUnit').value;
+            const example = { days: `${v}/7`, weeks: `${v}/52`, months: `${v}/12` }[u];
+            document.getElementById('rxfDurationExample').innerText = `e.g., ${example}`;
+            recalcQty();
+        }
+
+        function computeQty(freqPerDay, durationVal, durationUnit){
+            const days = durationUnit==='weeks' ? durationVal*7 : durationUnit==='months' ? durationVal*30 : durationVal;
+            const qty = Math.max(1, Math.ceil((parseInt(freqPerDay||1,10)||1) * (parseInt(days||1,10)||1)));
+            return qty;
+        }
+
+        function recalcQty(){
+            const perDay = parseInt(document.getElementById('rxfFreqDay').value||'1',10);
+            const durVal = parseInt(document.getElementById('rxfDurationVal').value||'1',10);
+            const durUnit = document.getElementById('rxfDurationUnit').value;
+            const qty = computeQty(perDay, durVal, durUnit);
+            const qEl = document.getElementById('rxfQty'); if(qEl) qEl.value = qty;
+        }
+
+        function submitCreateRx(){
+            const patient = document.getElementById('rxfPatient').value.trim();
+            const consultationType = document.getElementById('rxfConsultation').value || 'online';
+            const doctor = getInstanceDoctorName();
+            if(!patient){ alert('Please provide patient.'); return; }
+            if(currentRxMeds.length===0){ alert('Add at least one medication.'); return; }
+            const id = 'RX-' + (1000 + Math.floor(Math.random()*9000));
+            // demo base pricing per med, then sum
+            const baseFor = (m)=> 5 + Math.random()*20;
+            const meds = currentRxMeds.map(m=>({ ...m, base: baseFor(m) }));
+            const baseTotal = meds.reduce((s,m)=>s+(m.base||0),0);
+            prescriptions.unshift({ id, patient, doctor, consultationType, meds, baseTotal, status: 'pending', date: 'Now' });
+            renderRxTable();
+            bootstrap.Modal.getInstance(document.getElementById('createRxModal')).hide();
+        }
+
+        function getInstanceDoctorName(){
+            // Try to read from cookie 'doctor_name'; fallback to a branded default
+            const name = getCookie('doctor_name');
+            if(name) return name;
+            return 'Instance Doctor';
+        }
+
+        function updateRxStatus(id, status){
+            const rx = prescriptions.find(p => p.id===id); if(!rx) return;
+            rx.status = status; renderRxTable();
+        }
+
+        function computePrices(base){
+            const doctor = base * (1 - discountPolicy.doctor/100);
+            const wholesale = base * (1 - discountPolicy.wholesale/100);
+            return { retail: base, doctor, wholesale };
+        }
+
+        function renderInventoryTable(){
+            const q = (document.getElementById('invSearch').value||'').toLowerCase();
+            const stockFilter = document.getElementById('invStockFilter').value;
+            const tbody = document.querySelector('#inventoryTable tbody');
+            tbody.innerHTML = '';
+            inventory
+              .filter(i => i.name.toLowerCase().includes(q) || i.sku.toLowerCase().includes(q))
+              .filter(i => stockFilter==='all' ? true : stockFilter==='low' ? i.stock>0 && i.stock<=i.reorder : i.stock===0)
+              .forEach(i => {
+                const tr = document.createElement('tr');
+                const p = computePrices(i.basePrice);
+                tr.innerHTML = `
+                  <td>${i.sku}</td>
+                  <td>${i.name}</td>
+                  <td>${i.stock}</td>
+                  <td>${i.reorder}</td>
+                  <td>
+                    <div class="small">
+                        <div><strong>Retail:</strong> ${formatNaira(p.retail)}</div>
+                        <div><strong>Doctor:</strong> ${formatNaira(p.doctor)}</div>
+                        <div><strong>Wholesale:</strong> ${formatNaira(p.wholesale)}</div>
+                    </div>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary me-2" onclick="editInventory('${i.sku}')">Edit</button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="removeInventory('${i.sku}')">Delete</button>
+                  </td>`;
+                tbody.appendChild(tr);
+              });
+        }
+
+        function openAddInventory(){
+            const sku = prompt('SKU:'); if(!sku) return;
+            const name = prompt('Name:'); if(!name) return;
+            const stock = parseInt(prompt('Stock qty:' )||'0',10);
+            const reorder = parseInt(prompt('Reorder level:' )||'10',10);
+            const basePrice = parseFloat(prompt('Retail price:' )||'0');
+            inventory.push({ sku, name, stock, reorder, basePrice });
+            renderInventoryTable();
+        }
+
+        function editInventory(sku){
+            const item = inventory.find(i => i.sku===sku); if(!item) return;
+            const stock = parseInt(prompt('New stock:', item.stock)||item.stock,10);
+            item.stock = stock; renderInventoryTable();
+        }
+
+        function removeInventory(sku){
+            const idx = inventory.findIndex(i => i.sku===sku); if(idx<0) return;
+            inventory.splice(idx,1); renderInventoryTable();
+        }
+
+        function renderMonitoringTable(){
+            const filter = document.getElementById('monFilter').value;
+            const searchQuery = (document.getElementById('patientSearch').value || '').toLowerCase();
+            const tbody = document.querySelector('#monitoringTable tbody');
+            tbody.innerHTML = '';
+            monitoring
+              .filter(p => {
+                if(filter==='all') return true;
+                if(filter==='low_stock') return p.alerts.includes('Low stock');
+                if(filter==='abnormal_vitals') return p.alerts.some(a => a.includes('Abnormal'));
+                if(filter==='non_compliant') return p.alerts.includes('Non-compliant');
+                return true;
+              })
+              .filter(p => {
+                if(!searchQuery) return true;
+                return p.patient.toLowerCase().includes(searchQuery) || 
+                       p.condition.toLowerCase().includes(searchQuery) ||
+                       p.inventory.toLowerCase().includes(searchQuery);
+              })
+              .forEach(p => {
+                const tr = document.createElement('tr');
+                const alertBadges = p.alerts.map(a => `<span class="badge bg-warning text-dark me-1">${a}</span>`).join('');
+                const hasAbnormalVitals = p.alerts.some(a => a.includes('Abnormal'));
+                tr.innerHTML = `
+                  <td>${p.patient}</td>
+                  <td>${p.condition}</td>
+                  <td>BP: ${p.bp}<br>Sugar: ${p.sugar}</td>
+                  <td>${p.inventory}</td>
+                  <td>${alertBadges}</td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <button class="btn btn-sm btn-outline-primary" onclick="openCreateRx('${p.patient}')">Prescribe</button>
+                      ${hasAbnormalVitals ? `<button class="btn btn-sm btn-outline-warning" onclick="openConsultModal('${p.patient}')">Consult</button>` : ''}
+                      <button class="btn btn-sm btn-outline-info" onclick="openVitalsHistory('${p.patient}')">Review</button>
+                    </div>
+                  </td>`;
+                tbody.appendChild(tr);
+              });
+        }
+
+        function renderRewardsTable(){
+            const f = document.getElementById('rewardsFilter').value;
+            const tbody = document.querySelector('#rewardsTable tbody');
+            tbody.innerHTML = '';
+            rewards
+              .filter(r => f==='all' ? true : r.status===f)
+              .forEach(r => {
+                const tr = document.createElement('tr');
+                const badge = r.status==='paid' ? 'bg-success' : 'bg-warning';
+                tr.innerHTML = `
+                  <td>${r.date}</td>
+                  <td>${r.doctor}</td>
+                  <td>${r.rx}</td>
+                  <td>${formatNaira(r.amount)}</td>
+                  <td><span class="badge ${badge}">${r.status}</span></td>
+                  <td>
+                    ${r.status==='pending' ? `<button class='btn btn-sm btn-outline-primary' onclick=\"markRewardPaid('${r.rx}')\">Mark Paid</button>` : `<button class='btn btn-sm btn-outline-secondary' disabled>Paid</button>`}
+                  </td>`;
+                tbody.appendChild(tr);
+              });
+        }
+
+        function markRewardPaid(rxId){
+            const r = rewards.find(x=>x.rx===rxId); if(!r) return; r.status='paid'; renderRewardsTable();
+        }
+
+        // Settings & partners
+        function saveVirtualSettings(){
+            const vp = {
+                markupPct: parseFloat(document.getElementById('vpMarkup').value||vpSettings.markupPct),
+                deliveryFee: parseFloat(document.getElementById('vpDeliveryFee').value||vpSettings.deliveryFee),
+                logo: (document.getElementById('vpLogo').value||'')
+            };
+            vpSettings = vp;
+            alert('Settings saved (demo)');
+        }
+
+        function renderVpPartners(){
+            const host = document.getElementById('vpPartners'); if(!host) return;
+            host.innerHTML = '';
+            networkMembers.forEach(h=>{
+                const id = 'vp-partner-'+h.name.replace(/\s+/g,'-');
+                const el = document.createElement('div');
+                el.innerHTML = `<div class='form-check'>
+                    <input class='form-check-input' type='checkbox' data-type='${h.type}' ${typeof h.id!=='undefined'?`data-id='${h.id}'`:''} value='${h.name}' id='${id}' checked>
+                    <label class='form-check-label' for='${id}'>${h.name} <span class="badge bg-light text-dark text-capitalize ms-1">${h.type}</span></label>
+                </div>`;
+                host.appendChild(el);
+            });
+        }
+
+        // Routing partners in modal
+        function openRouteModal(){
+            const host = document.getElementById('routePartnerList');
+            host.innerHTML = '';
+            networkMembers.forEach(h=>{
+                const el = document.createElement('div');
+                el.innerHTML = `<div class='form-check'>
+                    <input class='form-check-input' name='routePartner' type='radio' id='route-${h.name}' value='${h.name}' data-type='${h.type}'>
+                    <label class='form-check-label' for='route-${h.name}'>${h.name} <span class="badge bg-light text-dark text-capitalize ms-1">${h.type}</span></label>
+                </div>`;
+                host.appendChild(el);
+            });
+            new bootstrap.Modal(document.getElementById('routeModal')).show();
+        }
+
+        // OSR & Clearance
+        function openOSRModal(){
+            // populate drug options
+            const dl = document.getElementById('drugOptionsOsr');
+            if(dl){ dl.innerHTML=''; drugCatalog.forEach(d=>{ const o=document.createElement('option'); o.value=d; dl.appendChild(o); }); }
+            // populate partners (exclude patients)
+            const sel = document.getElementById('osrPartner');
+            if(sel){
+                sel.innerHTML = '';
+                networkMembers.forEach(m=>{
+                    const opt = document.createElement('option');
+                    opt.value = m.name;
+                    opt.textContent = `${m.name} (${m.type})`;
+                    opt.dataset.type = m.type;
+                    if(typeof m.id !== 'undefined') opt.dataset.id = String(m.id);
+                    sel.appendChild(opt);
+                });
+            }
+            new bootstrap.Modal(document.getElementById('osrModal')).show();
+        }
+
+        function getOrCreateThreadForPartner(name, type){
+            let t = threads.find(x=>x.name===name && x.type===type);
+            if(!t){
+                t = { id: 't'+(Math.random().toString(36).slice(2,7)), name, type, unread: 0, messages: [] };
+                threads.unshift(t);
+            }
+            return t;
+        }
+
+        async function submitOSR(){
+            const drug = (document.getElementById('osrDrug').value||'').trim();
+            const qty = parseInt(document.getElementById('osrQty').value||'1',10);
+            const fulfill = document.getElementById('osrFulfillment').value;
+            const sel = document.getElementById('osrPartner');
+            const partner = sel && sel.value ? sel.value : '';
+            const selected = sel && sel.selectedOptions[0];
+            const pType = selected ? (selected.dataset.type||'partner') : 'partner';
+            const pId = selected && selected.dataset.id ? parseInt(selected.dataset.id,10) : 0;
+            const notes = (document.getElementById('osrNotes').value||'').trim();
+            if(!drug || !partner){ alert('Please select a drug and partner.'); return; }
+            const req = { id: 'OSR-'+(1000+Math.floor(Math.random()*9000)), drug, qty, fulfill, partner, notes, ts: new Date().toLocaleString() };
+            // Try backend first
+            try{
+                const { uid, auth } = getCreds();
+                if(uid && auth){
+                    const payload = { uid, auth, drug_name: drug, dosage: '', quantity: qty, partner_id: pId||undefined, partner_type: pType, note: notes };
+                    const j = await postJSON('/api/pharmacy/osr', payload);
+                    if(j && j.status === 'success'){
+                        // success path
+                    }
+                }
+            }catch(e){ /* ignore and fallback to demo */ }
+            // Demo/local update
+            osrRequests.unshift(req);
+            const thread = getOrCreateThreadForPartner(partner, pType);
+            thread.messages.push({ from:'me', text:`Out-of-stock request: ${drug} x${qty} (${fulfill}). ${notes||''}`, ts: 'Now' });
+            renderThreads();
+            bootstrap.Modal.getInstance(document.getElementById('osrModal')).hide();
+            alert('OSR sent');
+        }
+
+        async function submitClearance(){
+            const drug = (document.getElementById('clrDrug').value||'').trim();
+            const offer = parseFloat(document.getElementById('clrOffer').value||'0');
+            const qty = parseInt(document.getElementById('clrQty').value||'1',10);
+            const unit = document.getElementById('clrUnit').value;
+            const expiry = document.getElementById('clrExpiry').value;
+            const reason = (document.getElementById('clrReason').value||'').trim();
+            if(!drug || !offer || offer<0){ alert('Please enter drug and a valid offer price.'); return; }
+            const rec = { id:'CLR-'+(1000+Math.floor(Math.random()*9000)), drug, offer, qty, unit, expiry, reason, ts: new Date().toLocaleString() };
+            clearanceSales.unshift(rec);
+            // Notify all checked partners in VP settings
+            const host = document.getElementById('vpPartners');
+            if(host){
+                const selectedPartners = [];
+                host.querySelectorAll('input.form-check-input:checked').forEach(chk=>{
+                    const name = chk.value; const type = chk.dataset.type||'partner';
+                    const pid = chk.dataset.id ? parseInt(chk.dataset.id,10) : undefined;
+                    selectedPartners.push({ id: pid, type, name });
+                    const t = getOrCreateThreadForPartner(name, type);
+                    t.messages.push({ from:'me', text:`Clearance: ${drug} — ${qty} ${unit} at ₦${offer} (reason: ${reason||'N/A'})`, ts: 'Now' });
+                });
+                renderThreads();
+            }
+            // Try backend persist
+            try{
+                const { uid, auth } = getCreds();
+                if(uid && auth){
+                    const items = [{ name: drug, quantity: qty, unit, offer, expiry, reason }];
+                    const partners = (host ? Array.from(host.querySelectorAll('input.form-check-input:checked')).map(chk=>({ id: chk.dataset.id?parseInt(chk.dataset.id,10):undefined, type: chk.dataset.type||'partner', name: chk.value })) : []);
+                    await postJSON('/api/pharmacy/clearance', { uid, auth, items, note: reason, partners });
+                }
+            }catch(e){ /* ignore */ }
+            bootstrap.Modal.getInstance(document.getElementById('clearanceModal')).hide();
+            alert('Clearance published');
+        }
+
+        // Messaging UI
+        let currentThreadId = null;
+        function renderThreads(){
+            const list = document.getElementById('threadsList'); if(!list) return;
+            const q = (document.getElementById('msgSearch')?.value||'').toLowerCase();
+            list.innerHTML = '';
+            threads
+              .filter(t => !q || t.name.toLowerCase().includes(q) || t.type.toLowerCase().includes(q))
+              .forEach(t=>{
+                const a = document.createElement('a');
+                a.href = '#'; a.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+                a.onclick = (e)=>{ e.preventDefault(); openThread(t.id); };
+                a.innerHTML = `<span>${t.name} <span class="badge bg-light text-dark text-capitalize ms-1">${t.type}</span></span>`+
+                              (t.unread?`<span class='badge bg-primary rounded-pill'>${t.unread}</span>`:'');
+                list.appendChild(a);
+              });
+            if(currentThreadId){ openThread(currentThreadId); }
+        }
+
+        function openThread(id){
+            const t = threads.find(x=>x.id===id) || threads[0]; if(!t) return;
+            currentThreadId = t.id;
+            const pane = document.getElementById('chatPane');
+            const title = document.getElementById('threadTitle');
+            const input = document.getElementById('chatInput');
+            if(title) title.textContent = `${t.name} — ${t.type}`;
+            if(input) input.disabled = false;
+            if(pane){
+                pane.innerHTML = '';
+                t.messages.forEach(m=>{
+                    const div = document.createElement('div');
+                    div.className = 'chat-message ' + (m.from==='me' ? 'me' : 'them');
+                    div.textContent = `${m.text} `;
+                    pane.appendChild(div);
+                });
+                pane.scrollTop = pane.scrollHeight;
+            }
+            t.unread = 0;
+        }
+
+        function sendMessage(){
+            const input = document.getElementById('chatInput'); if(!input || !currentThreadId) return;
+            const text = input.value.trim(); if(!text) return;
+            const t = threads.find(x=>x.id===currentThreadId); if(!t) return;
+            t.messages.push({ from:'me', text, ts:'Now' });
+            input.value='';
+            openThread(currentThreadId);
+        }
+
+        // Discounts
+        function applyDiscountPolicy(){
+            discountPolicy.doctor = parseFloat(document.getElementById('discDoctor').value||discountPolicy.doctor);
+            discountPolicy.wholesale = parseFloat(document.getElementById('discWholesale').value||discountPolicy.wholesale);
+            renderInventoryTable();
+        }
+
+        // Patient registration
+        function registerPatient(){
+            const name = document.getElementById('rpName').value.trim();
+            const dob = document.getElementById('rpDob').value;
+            const gender = document.getElementById('rpGender').value;
+            const phone = document.getElementById('rpPhone').value.trim();
+            const email = document.getElementById('rpEmail').value.trim();
+            const address = document.getElementById('rpAddress').value.trim();
+            const condition = document.getElementById('rpCondition').value.trim() || 'General';
+            const allergies = document.getElementById('rpAllergies').value.trim();
+            const emergencyName = document.getElementById('rpEmergencyName').value.trim();
+            const emergencyPhone = document.getElementById('rpEmergencyPhone').value.trim();
+            
+            if(!name || !dob || !gender || !phone) {
+                alert('Please fill in all required fields (Name, DOB, Gender, Phone)');
+                return;
+            }
+            
+            const patientId = 'pt' + String(Date.now()).slice(-6);
+            const emergencyContact = emergencyName && emergencyPhone ? `${emergencyName} (${emergencyPhone})` : '';
+            
+            const newPatient = {
+                id: patientId,
+                patient: name,
+                condition: condition,
+                bp: '—',
+                sugar: '—',
+                heartRate: '—',
+                temperature: '—',
+                weight: '—',
+                inventory: '—',
+                alerts: [],
+                profile: {
+                    dob: dob,
+                    gender: gender,
+                    phone: phone,
+                    email: email,
+                    address: address,
+                    allergies: allergies,
+                    emergencyContact: emergencyContact
+                },
+                vitalsHistory: []
+            };
+            
+            monitoring.push(newPatient);
+            renderMonitoringTable();
+            
+            // Clear form
+            document.getElementById('patientRegistrationForm').reset();
+            
+            alert(`Patient ${name} registered successfully!`);
+        }
+
+        // RX modal logic
+        let currentRxIdx = -1;
+        function openRx(id){
+            currentRxIdx = prescriptions.findIndex(p=>p.id===id);
+            if(currentRxIdx<0) return;
+            const r = prescriptions[currentRxIdx];
+            document.getElementById('rxmId').value = r.id;
+            document.getElementById('rxmPatient').value = r.patient;
+            document.getElementById('rxmDoctor').value = r.doctor;
+            const itemsText = (r.meds||[]).map(summarizeMed).join('\n');
+            document.getElementById('rxmItems').value = itemsText;
+            document.getElementById('rxmStatus').value = r.status;
+            document.getElementById('rxmDeliveryFee').value = vpSettings.deliveryFee;
+            document.getElementById('rxmAddress').value = '';
+            document.getElementById('rxmFulfillment').value = 'pickup';
+            document.getElementById('rxmTimeline').innerText = `Timeline: Created → Received (${r.date})`;
+            new bootstrap.Modal(document.getElementById('rxDetailModal')).show();
+        }
+
+        function stepRxStatus(dir){
+            if(currentRxIdx<0) return;
+            const order = ['pending','processing','ready','dispensed','delivered'];
+            const r = prescriptions[currentRxIdx];
+            let idx = order.indexOf(r.status);
+            idx = Math.min(Math.max(idx+dir,0), order.length-1);
+            r.status = order[idx];
+            document.getElementById('rxmStatus').value = r.status;
+            renderRxTable();
+        }
+
+        function openInvoiceFromRx(){
+            if(currentRxIdx<0) return;
+            const r = prescriptions[currentRxIdx];
+            const base = (r.baseTotal!=null ? r.baseTotal : (r.meds||[]).reduce((s,m)=>s+(m.base||0),0));
+            const markup = base * (vpSettings.markupPct/100);
+            const delivery = parseFloat(document.getElementById('rxmDeliveryFee').value||vpSettings.deliveryFee);
+            document.getElementById('invRx').innerText = r.id;
+            document.getElementById('invPatient').innerText = r.patient;
+            document.getElementById('invItems').innerText = (r.meds||[]).map(summarizeMed).join(' | ');
+            document.getElementById('invBase').innerText = formatNaira(base);
+            document.getElementById('invMarkupPct').innerText = vpSettings.markupPct.toFixed(0);
+            document.getElementById('invMarkup').innerText = formatNaira(markup);
+            document.getElementById('invDelivery').innerText = formatNaira(delivery);
+            document.getElementById('invGrand').innerText = formatNaira(base+markup+delivery);
+            new bootstrap.Modal(document.getElementById('invoiceModal')).show();
+        }
+
+        // initial renders
+        // Consultation Modal Functions
+        function openConsultModal(patientName) {
+            document.getElementById('consultPatient').value = patientName;
+            document.getElementById('consultType').value = 'virtual';
+            toggleConsultFields();
+            new bootstrap.Modal(document.getElementById('consultModal')).show();
+        }
+
+        function toggleConsultFields() {
+            const consultType = document.getElementById('consultType').value;
+            const virtualFields = document.getElementById('virtualFields');
+            const physicalFields = document.getElementById('physicalFields');
+            
+            if (consultType === 'virtual') {
+                virtualFields.style.display = 'block';
+                physicalFields.style.display = 'none';
+            } else {
+                virtualFields.style.display = 'none';
+                physicalFields.style.display = 'block';
+            }
+        }
+
+        function generateMeetingLink() {
+            const meetingId = 'meet-' + Math.random().toString(36).substr(2, 9);
+            const link = `https://myvitalz.ai/meet/${meetingId}`;
+            document.getElementById('virtualLink').value = link;
+        }
+
+        function scheduleConsultation() {
+            const patient = document.getElementById('consultPatient').value;
+            const consultType = document.getElementById('consultType').value;
+            const notes = document.getElementById('consultNotes').value;
+            
+            let scheduleInfo = '';
+            if (consultType === 'virtual') {
+                const dateTime = document.getElementById('virtualDateTime').value;
+                const link = document.getElementById('virtualLink').value;
+                scheduleInfo = `Virtual meeting scheduled for ${dateTime}. Meeting link: ${link}`;
+            } else {
+                const dateTime = document.getElementById('physicalDateTime').value;
+                const location = document.getElementById('meetingLocation').value;
+                scheduleInfo = `Physical appointment scheduled for ${dateTime} at ${location}`;
+            }
+            
+            alert(`Consultation scheduled for ${patient}!\n\n${scheduleInfo}\n\nNotes: ${notes}\n\nNotification will be sent to patient.`);
+            bootstrap.Modal.getInstance(document.getElementById('consultModal')).hide();
+        }
+
+        // Vitals History Functions
+        function openVitalsHistory(patientName) {
+            const patient = monitoring.find(p => p.patient === patientName);
+            if (!patient) return;
+            
+            document.getElementById('vitalsPatientName').textContent = `${patientName} - Vitals History`;
+            
+            const tbody = document.getElementById('vitalsHistoryBody');
+            tbody.innerHTML = '';
+            
+            if (patient.vitalsHistory && patient.vitalsHistory.length > 0) {
+                patient.vitalsHistory.forEach(vital => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${vital.date}</td>
+                        <td>${vital.bp}</td>
+                        <td>${vital.sugar}</td>
+                        <td>${vital.heartRate} bpm</td>
+                        <td>${vital.temperature}°F</td>
+                        <td>${vital.weight} lbs</td>
+                        <td>${vital.cholesterol} mg/dL</td>
+                        <td>${vital.hdl} mg/dL</td>
+                        <td>${vital.ldl} mg/dL</td>
+                        <td>${vital.notes}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted">No vitals history available</td></tr>';
+            }
+            
+            new bootstrap.Modal(document.getElementById('vitalsHistoryModal')).show();
+        }
+
+        function exportVitalsHistory() {
+            const patientName = document.getElementById('vitalsPatientName').textContent.split(' - ')[0];
+            const patient = monitoring.find(p => p.patient === patientName);
+            
+            if (!patient || !patient.vitalsHistory) {
+                alert('No vitals history to export');
+                return;
+            }
+            
+            let csvContent = "Date,Blood Pressure,Sugar Level,Heart Rate,Temperature,Weight,Cholesterol,HDL,LDL,Notes\n";
+            patient.vitalsHistory.forEach(vital => {
+                csvContent += `"${vital.date}","${vital.bp}","${vital.sugar}","${vital.heartRate}","${vital.temperature}","${vital.weight}","${vital.cholesterol}","${vital.hdl}","${vital.ldl}","${vital.notes}"\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${patientName}_vitals_history.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Partner Details Functions
+        let currentPartnerId = null;
+        
+        function viewPartnerDetails(partnerId) {
+            const partner = networkMembers.find(p => p.id === partnerId);
+            if (!partner) return;
+            
+            currentPartnerId = partnerId;
+            
+            // Populate partner details
+            document.getElementById('partnerName').textContent = partner.name;
+            document.getElementById('partnerType').textContent = partner.type;
+            document.getElementById('partnerStatus').innerHTML = `<span class="badge ${partner.status === 'Active' ? 'bg-success' : 'bg-warning'}">${partner.status}</span>`;
+            document.getElementById('partnerAddress').textContent = partner.address || 'Not provided';
+            document.getElementById('partnerPhone').textContent = partner.phone || 'Not provided';
+            document.getElementById('partnerEmail').textContent = partner.email || 'Not provided';
+            document.getElementById('partnerRating').innerHTML = partner.rating ? `${partner.rating}/5 ⭐` : 'Not rated';
+            document.getElementById('partnerEstablished').textContent = partner.established || 'Not provided';
+            
+            // Handle specialties
+            const specialtiesDiv = document.getElementById('partnerSpecialties');
+            if (partner.specialties && partner.specialties.length > 0) {
+                specialtiesDiv.innerHTML = partner.specialties.map(s => `<span class="badge bg-light text-dark me-1">${s}</span>`).join('');
+            } else {
+                specialtiesDiv.innerHTML = '<span class="text-muted">None specified</span>';
+            }
+            
+            // Handle type-specific fields
+            if (partner.type === 'pharmacy') {
+                document.getElementById('partnerInventorySection').style.display = 'block';
+                document.getElementById('partnerDepartmentsSection').style.display = 'none';
+                document.getElementById('partnerBedsSection').style.display = 'none';
+                
+                const inventoryDiv = document.getElementById('partnerInventory');
+                if (partner.inventory && partner.inventory.length > 0) {
+                    inventoryDiv.innerHTML = partner.inventory.map(item => `<span class="badge bg-primary me-1">${item}</span>`).join('');
+                } else {
+                    inventoryDiv.innerHTML = '<span class="text-muted">No inventory data</span>';
+                }
+            } else if (partner.type === 'hospital') {
+                document.getElementById('partnerInventorySection').style.display = 'none';
+                document.getElementById('partnerDepartmentsSection').style.display = 'block';
+                document.getElementById('partnerBedsSection').style.display = 'block';
+                
+                const departmentsDiv = document.getElementById('partnerDepartments');
+                if (partner.departments && partner.departments.length > 0) {
+                    departmentsDiv.innerHTML = partner.departments.map(dept => `<span class="badge bg-info me-1">${dept}</span>`).join('');
+                } else {
+                    departmentsDiv.innerHTML = '<span class="text-muted">No department data</span>';
+                }
+                
+                document.getElementById('partnerBeds').textContent = partner.beds || 'Not specified';
+            }
+            
+            new bootstrap.Modal(document.getElementById('partnerDetailsModal')).show();
+        }
+        
+        function removePartner(partnerId) {
+            const partner = networkMembers.find(p => p.id === partnerId);
+            if (!partner) return;
+            
+            if (confirm(`Are you sure you want to remove ${partner.name} from your network?`)) {
+                const index = networkMembers.findIndex(p => p.id === partnerId);
+                if (index > -1) {
+                    networkMembers.splice(index, 1);
+                    renderNetworkTable();
+                    renderVpPartners();
+                    alert(`${partner.name} has been removed from your network.`);
+                }
+            }
+        }
+        
+        function navigateToChat() {
+            const partner = networkMembers.find(p => p.id === currentPartnerId);
+            if (!partner) return;
+            
+            // Close the partner details modal
+            bootstrap.Modal.getInstance(document.getElementById('partnerDetailsModal')).hide();
+            
+            // Navigate to messages page
+            showPage(null, 'messages');
+            
+            // Find or create a thread for this partner
+            let thread = threads.find(t => t.name === partner.name);
+            if (!thread) {
+                const threadId = 'thread-' + Date.now();
+                thread = {
+                    id: threadId,
+                    name: partner.name,
+                    type: partner.type,
+                    lastMessage: 'Start a conversation...',
+                    time: 'now',
+                    unread: 0,
+                    messages: []
+                };
+                threads.unshift(thread);
+                renderThreads();
+            }
+            
+            // Open the chat thread
+            openThread(thread.id);
+            
+            alert(`Chat opened with ${partner.name}. You can now send messages to discuss prescriptions, inventory, or other partnership matters.`);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load backend partners if available, then render
+            loadPartners().finally(() => {
+                renderNetworkTable();
+                renderVpPartners();
+            });
+            renderRxTable();
+            renderInventoryTable();
+            renderMonitoringTable();
+            renderRewardsTable();
+            renderThreads();
+        });
+    </script>
+</body>
+</html>

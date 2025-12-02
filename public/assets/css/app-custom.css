@@ -1,0 +1,166 @@
+/* MyVitalz Premium UI - Global Styles */
+/* EXACT COLORS FROM DOCTOR DASHBOARD: #696cff (primary) and #5f61e6 (secondary) */
+:root{
+  --mv-primary: #696cff;
+  --mv-secondary: #5f61e6;
+  --mv-accent: #22c55e;
+  --mv-surface: #ffffff;
+  --mv-muted: #64748b;
+  --mv-bg-start: #696cff;
+  --mv-bg-end: #5f61e6;
+  --bs-primary: #696cff;
+}
+
+/* Premium gradient background wrapper - MATCHES DOCTOR SIDEBAR/NAVBAR */
+.mv-auth-bg{
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #696cff 0%, #5f61e6 100%);
+}
+
+/* Glass auth card */
+.mv-card-glass{
+  background: rgba(255,255,255,0.95) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.8) !important;
+  box-shadow: 0 25px 50px rgba(105,108,255,.2) !important;
+  border-radius: 20px !important;
+}
+
+/* Brand logo container */
+.brand-logo-box{
+  background:#fff; border-radius:12px; padding:8px 14px; display:inline-flex; align-items:center; gap:8px;
+  box-shadow: 0 10px 30px rgba(105,108,255,.15);
+}
+.brand-logo-box img{ height:36px; width:auto; display:block; }
+
+/* Inputs and buttons */
+.mv-input .form-control{ 
+  height:50px; 
+  border-radius:12px; 
+  border: 1px solid #e4e7ec;
+  transition: all 0.2s ease;
+}
+.mv-input .form-control:focus{ 
+  border-color: var(--mv-primary); 
+  box-shadow: 0 0 0 3px rgba(105,108,255,0.12);
+}
+.mv-input .input-group-text{ border-radius:12px; background: #f8f9fa; border-color: #e4e7ec; }
+.mv-primary-btn{ 
+  height:50px; 
+  border-radius:12px; 
+  font-weight:600; 
+  background: linear-gradient(135deg, var(--mv-primary) 0%, var(--mv-secondary) 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(105,108,255,0.35);
+  transition: all 0.3s ease;
+}
+.mv-primary-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(105,108,255,0.45);
+}
+.mv-link-muted{ color: var(--mv-muted) !important; }
+
+/* Section headings */
+.mv-auth-title{ font-weight:700; letter-spacing:-0.02em; color: #1a1d1f; }
+
+/* Small helper text */
+.mv-helper{ color:#667085; font-size:.9rem; }
+
+/* Role selector buttons */
+.btn-primary{
+  background-color: var(--mv-primary) !important;
+  border-color: var(--mv-primary) !important;
+}
+.btn-primary:hover{
+  background-color: var(--mv-secondary) !important;
+  border-color: var(--mv-secondary) !important;
+}
+.btn-outline-primary{
+  color: var(--mv-primary) !important;
+  border-color: var(--mv-primary) !important;
+}
+.btn-outline-primary:hover{
+  background-color: var(--mv-primary) !important;
+  color: #fff !important;
+}
+
+/* Badge styling */
+.badge.bg-primary{
+  background: linear-gradient(135deg, var(--mv-primary) 0%, var(--mv-secondary) 100%) !important;
+}
+
+/* Alert styling */
+.alert{
+  border-radius: 12px;
+  border: none;
+}
+.alert-danger{
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border-left: 4px solid #dc2626;
+}
+.alert-success{
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+  border-left: 4px solid #16a34a;
+}
+
+/* Links */
+a{ color: var(--mv-primary); transition: color 0.2s ease; }
+a:hover{ color: var(--mv-secondary); }
+
+/* Role card styling for signup */
+.role-card{
+  border: 2px solid #e4e7ec;
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: #fff;
+}
+.role-card:hover{
+  border-color: var(--mv-primary);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(105,108,255,0.15);
+}
+.role-card .icon-wrapper{
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(105,108,255,0.1) 0%, rgba(95,97,230,0.1) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+.role-card .icon-wrapper i{
+  font-size: 1.75rem;
+  color: var(--mv-primary);
+}
+.role-card h5{
+  font-weight: 600;
+  color: #1a1d1f;
+  margin-bottom: 0.5rem;
+}
+.role-card p{
+  color: #667085;
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+
+/* Form labels */
+.form-label{
+  font-weight: 500;
+  color: #344054;
+  margin-bottom: 0.5rem;
+}
+
+/* Checkbox styling */
+.form-check-input:checked{
+  background-color: var(--mv-primary);
+  border-color: var(--mv-primary);
+}
